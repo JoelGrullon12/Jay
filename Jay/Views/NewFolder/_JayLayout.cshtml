@@ -1,0 +1,26 @@
+﻿@using Microsoft.AspNetCore.Http;
+@using Jay.Core.Application.Helpers;
+@using Jay.Core.Application.ViewModels.User;
+@inject IHttpContextAccessor httpContext;
+@{
+    UserViewModel user = httpContext.HttpContext.Session.Get<UserViewModel>("user");
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Jay</title>
+</head>
+<body>
+    
+            @RenderBody()
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; @DateTime.Now.Year - Jay - JoelGrullon12 - 2021-0612 - All rigths reserved
+        </div>
+    </footer>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
