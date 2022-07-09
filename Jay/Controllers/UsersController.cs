@@ -66,5 +66,24 @@ namespace Jay.Presentation.WebApp.Controllers
 
             return Redirect(urlFrom);
         }
+
+        public async Task<IActionResult> DeleteFriend(int id, int frType)
+        {
+            if (!_session.HasUser())
+                return RedirectToRoute(new { controller = "Access", action = "Index" });
+
+            ViewData["frType"] = frType;
+            return View(await _userService.GetByIdWithIncludesViewModel(id));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteFr(int frid, int frType)
+        {
+            if (!_session.HasUser())
+                return RedirectToRoute(new { controller = "Access", action = "Index" });
+
+            await _userService.DeleteFriend(_user.Id, frid, frType);
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

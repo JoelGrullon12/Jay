@@ -151,5 +151,16 @@ namespace Jay.Core.Application.Services
 
             return ids;
         }
+
+        public async Task DeleteFriend(int userId, int frId, int frType)
+        {
+            Friend friend = new();
+            if (frType == 1)
+                friend = await _frRepository.GetFriendshipAsync(userId, frId);
+            else if (frType == 2)
+                friend = await _frRepository.GetFriendshipAsync(frId, userId);
+
+            await _frRepository.DeleteAsync(friend);
+        }
     }
 }

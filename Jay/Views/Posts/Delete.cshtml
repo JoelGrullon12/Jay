@@ -10,7 +10,7 @@
     Layout = "~/Views/Shared/_JayLayout.cshtml";
     IHttpContextAccessor _httpContext = httpContext;
     UserViewModel _user = _httpContext.HttpContext.Session.Get<UserViewModel>("user");
-    ViewData["Title"] = "Post de "+Model.User.UserName;
+    ViewData["Title"] = "Eliminar publicacion";
 
 }
 
@@ -18,7 +18,7 @@
             @*///////////////////////////Center Contents*@
             <div class="col-md-9 gedf-main">
 
-                <!--- \\\\\\\Post-->
+                    <!--- \\\\\\\Post-->
                     <div class="card gedf-card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between align-items-center">
@@ -32,25 +32,12 @@
                                     </div>
                                 </div>
                                 <div>
-                                @if (Model.UserId == _user.Id)
-                                {
-                                    <div class="dropdown">
-                                        <button class="btn btn-link dropdown-toggle" type="button" id="gedf-drop1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-ellipsis-h"></i>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="gedf-drop1">
-                                            <div class="h6 dropdown-header">Opciones</div>
-                                            <a asp-controller="Posts" asp-action="Edit" asp-route-id="@Model.Id" class="dropdown-item">Editar</a>
-                                            <a asp-controller="Posts" asp-action="Delete" asp-route-id="@Model.Id" class="dropdown-item text-danger">Eliminar</a>
-                                        </div>
-                                    </div>
-                                }
-                        </div>
+                                </div>
                             </div>
 
                         </div>
                         <div class="card-body">
-                    @{
+                            @{
                         string date = Stuff.SetDate(Model.Created);
                         
                     }
@@ -85,39 +72,28 @@
 
                                 </div>
                             }
-                        </div>
-                        <div class="card-footer">
 
-                            <form method="post" asp-controller="Home" asp-action="AddComment">
-                                <div class="d-flex align-items-center">
-                                    <div class="mr-2 mb-3">
-                                        <img class="rounded-circle" width="40" src="@_user.ProfilePicture" alt="">
-                                    </div>
-                                    <div class="form-group col-10">
-                                        <textarea class="form-control" name="commentText" rows="2" placeholder="Comenta algo..." required></textarea>
-                                    </div>
-                                    <div class="btn-group mb-3">
-                                        <button type="submit" class="btn btn-primary">Comentar</button>
-                                    </div>
+                            <form method="post" asp-action="Delete" asp-controller="Posts">
+
+                                <div>
+                                    <h5 class="card-title">¿Estas seguro que quieres eliminar esta publicacion? Esta accion no se puede deshacer</h5>
                                 </div>
 
-                                <input type="hidden" name="postId" value="@Model.Id">
+                                <div class="form-group">
+                                    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                               
+                                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                                </div>
+
+
+                                <input type="hidden" asp-for="Id" />
+                                <input type="hidden" asp-for="PostTitle" />
+                                <input type="hidden" asp-for="PostText" />
+                                <input type="hidden" asp-for="MediaType" />
+                                <input type="hidden" asp-for="MediaUrl" />
+                                <input type="hidden" asp-for="Created" />
+                                <input type="hidden" asp-for="UserId" />
                             </form>
-
-                            @foreach(CommentViewModel com in Model.Comments)
-                            {
-                                string comDate = Stuff.SetDate(com.Created);
-                                <div class="comment d-flex align-items-center ">
-                                    <div class="mr-2">
-                                        <img class="rounded-circle" width="40" src="@com.User.ProfilePicture" alt="">
-                                    </div>
-                                    <div class="ml-2">
-                                        <div class="h6 m-0">@com.User.Name @com.User.LastName <small>- @comDate</small></div>
-                                        <div class="h7">@com.Text</div>
-                                    </div>
-                                </div>
-                            }
-
                         </div>
                     </div>
                     <!-- Post /////-->

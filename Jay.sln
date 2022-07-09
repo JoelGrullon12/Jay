@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jay.Presentation.WebApp", "Jay\Jay.Presentation.WebApp.csproj", "{7AEEBA2A-F573-41BA-9BB6-CD5C0C2A20F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jay.Presentation.WebApp", "Jay\Jay.Presentation.WebApp.csproj", "{7AEEBA2A-F573-41BA-9BB6-CD5C0C2A20F2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{73D6E5E8-CBE2-4661-956C-464D76212E0D}"
 EndProject
@@ -13,11 +13,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{4DB6D062-6D6D-4B7E-902B-2BA818378246}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jay.Core.Domain", "Jay.Core.Domain\Jay.Core.Domain.csproj", "{D6DE6758-6858-45F5-AFA6-5D9252E13A33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jay.Core.Domain", "Jay.Core.Domain\Jay.Core.Domain.csproj", "{D6DE6758-6858-45F5-AFA6-5D9252E13A33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jay.Core.Application", "Jay.Core.Application\Jay.Core.Application.csproj", "{4D5E19C9-AADB-46FB-8958-469BEA8DC771}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jay.Core.Application", "Jay.Core.Application\Jay.Core.Application.csproj", "{4D5E19C9-AADB-46FB-8958-469BEA8DC771}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jay.Infrastructure.Persistence", "Jay.Infrastructure.Persistence\Jay.Infrastructure.Persistence.csproj", "{BEF8A13A-CD7B-4DEB-A0CA-217D8569E107}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jay.Infrastructure.Persistence", "Jay.Infrastructure.Persistence\Jay.Infrastructure.Persistence.csproj", "{BEF8A13A-CD7B-4DEB-A0CA-217D8569E107}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jay.Infrastructure.Shared", "Jay.Infrastructure.Shared\Jay.Infrastructure.Shared.csproj", "{E078BBB1-3506-4F5C-9449-8D6C0E5BD33A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{BEF8A13A-CD7B-4DEB-A0CA-217D8569E107}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEF8A13A-CD7B-4DEB-A0CA-217D8569E107}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEF8A13A-CD7B-4DEB-A0CA-217D8569E107}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E078BBB1-3506-4F5C-9449-8D6C0E5BD33A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E078BBB1-3506-4F5C-9449-8D6C0E5BD33A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E078BBB1-3506-4F5C-9449-8D6C0E5BD33A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E078BBB1-3506-4F5C-9449-8D6C0E5BD33A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +59,7 @@ Global
 		{D6DE6758-6858-45F5-AFA6-5D9252E13A33} = {B5FFD07C-3F3D-47A1-81CB-6E8A4524D109}
 		{4D5E19C9-AADB-46FB-8958-469BEA8DC771} = {B5FFD07C-3F3D-47A1-81CB-6E8A4524D109}
 		{BEF8A13A-CD7B-4DEB-A0CA-217D8569E107} = {33D92BAF-6DAA-4FE2-8207-34D02CDABFB0}
+		{E078BBB1-3506-4F5C-9449-8D6C0E5BD33A} = {33D92BAF-6DAA-4FE2-8207-34D02CDABFB0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {442CD1FA-D840-4E20-BC13-50EA0755BE66}

@@ -9,6 +9,6 @@ namespace Jay.Core.Application.Interfaces.Repositories
 {
     public interface IFriendRepository : IGenericRepository<Friend>
     {
-
+        Task<Friend> GetFriendshipAsync(int userid, int frid);
     }
 }

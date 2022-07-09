@@ -36,10 +36,12 @@ namespace Jay.Presentation.WebApp.Controllers
             _userService = userService;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool errFileFormat = false)
         {
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
+
+            ViewBag.ErrFormat = errFileFormat;
 
             return View(await _postService.GetAllViewModel());
         }
@@ -53,7 +55,7 @@ namespace Jay.Presentation.WebApp.Controllers
 
 
             FileInfo fileInfo = new(postMedia.FileName);
-            int mediaType = 0;
+            int mediaType;
 
             switch (fileInfo.Extension)
             {
@@ -71,7 +73,7 @@ namespace Jay.Presentation.WebApp.Controllers
                     break;
 
                 default:
-                    return RedirectToRoute(new { controller = "Home", action = "Index" });
+                    return RedirectToAction("Index", new { errFileFormat=true });
             }
 
             PostViewModel vm = new()
@@ -87,7 +89,7 @@ namespace Jay.Presentation.WebApp.Controllers
 
             if (postVM != null && postVM.Id != 0)
             {
-                postVM.MediaUrl = UploadMedia(postMedia, postVM.Id, MediaType.Image);
+                postVM.MediaUrl = UploadMedia(postMedia, postVM.Id, (MediaType)mediaType);
                 await _postService.DML(postVM, DMLAction.Update, postVM.Id);
             }
 
@@ -129,16 +131,13 @@ namespace Jay.Presentation.WebApp.Controllers
 
             await _comService.DML(vm, DMLAction.Insert);
 
-            return RedirectToRoute(new { controller = "Home", action = "Index" });
+            return RedirectToAction("Post", "Posts", new { id = postId });
         }
 
-        private string UploadMedia(IFormFile file, int id, MediaType mediaType, bool editMode = false, string imgUrl = "")
+        //Metodo SOLO para subir la multimedia, no edita porque no la necesita///////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        private string UploadMedia(IFormFile file, int id, MediaType mediaType)
         {
-            if (editMode && file == null)
-            {
-                return imgUrl;
-            }
-
             string basePath = "";
 
             switch (mediaType)
@@ -168,16 +167,57 @@ namespace Jay.Presentation.WebApp.Controllers
                 file.CopyTo(strem);
             }
 
-            if (editMode)
-            {
-                string[] oldImgF = imgUrl.Split("/");
-                string oldImg = oldImgF[^1];
-                string oldPath = Path.Combine(path, oldImg);
-                if (System.IO.File.Exists(oldPath))
-                    System.IO.File.Delete(oldPath);
-            }
-
             return $"{basePath}/{filename}";
         }
     }
 }
+
+
+//Lo comento por aqui para no perderlo XD
+//private string UploadMedia(IFormFile file, int id, MediaType mediaType, bool editMode = false, string imgUrl = "")
+//{
+//    if (editMode && file == null)
+//    {
+//        return imgUrl;
+//    }
+
+//    string basePath = "";
+
+//    switch (mediaType)
+//    {
+//        case MediaType.Image:
+//            basePath = $"/media/post/img/{id}";
+//            break;
+
+//        case MediaType.Video:
+//            basePath = $"/media/post/vid/{id}";
+//            break;
+//    }
+
+//    string path = Path.Combine(Directory.GetCurrentDirectory(), $"wwwroot{basePath}");
+
+//    if (!Directory.Exists(path))
+//        Directory.CreateDirectory(path);
+
+//    Guid guid = Guid.NewGuid();
+//    FileInfo fileInfo = new(file.FileName);
+//    string filename = guid + fileInfo.Extension;
+
+//    string filePath = Path.Combine(path, filename);
+
+//    using (var strem = new FileStream(filePath, FileMode.Create))
+//    {
+//        file.CopyTo(strem);
+//    }
+
+//    if (editMode)
+//    {
+//        string[] oldImgF = imgUrl.Split("/");
+//        string oldImg = oldImgF[^1];
+//        string oldPath = Path.Combine(path, oldImg);
+//        if (System.IO.File.Exists(oldPath))
+//            System.IO.File.Delete(oldPath);
+//    }
+
+//    return $"{basePath}/{filename}";
+//}

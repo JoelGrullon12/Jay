@@ -13,6 +13,8 @@
     ViewData["Title"] = "Inicio";
 
     ViewData["postType"] = "all";
+    bool errFormat = ViewBag.ErrFormat;
+    int noc = 0;
 }
 
 
@@ -23,48 +25,101 @@
                 <div class="card gedf-card">
                     <div class="card-header">
                         <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link active" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="true">Escribe algo</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" id="images-tab" data-toggle="tab" role="tab" aria-controls="images" aria-selected="false" href="#images">Foto o Video</a>
-                            </li>
+                            @if (errFormat)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="true">Escribe algo</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="images-tab" data-toggle="tab" role="tab" aria-controls="images" aria-selected="false" href="#images">Foto o Video</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="posts-tab" data-toggle="tab" href="#posts" role="tab" aria-controls="posts" aria-selected="false">Escribe algo</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="images-tab" data-toggle="tab" role="tab" aria-controls="images" aria-selected="true" href="#images">Foto o Video</a>
+                                </li>
+                            }
+
                         </ul>
                     </div>
                     <div class="card-body">
                         <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
-                                <form method="post" asp-controller="Home" asp-action="Add">
-                                    <div class="form-group">
-                                        <input class="form-control" name="postTitle" placeholder="Titulo del Post" required />
-                                    </div>
-                                    <div class="form-group">
-                                        <textarea class="form-control" name="postText" rows="3" placeholder="Que quieres postear?" required></textarea>
-                                    </div>
-                                    <div class="btn-group">
-                                        <button type="submit" class="btn btn-primary">Publicar</button>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="tab-pane fade" id="images" role="tabpanel" aria-labelledby="images-tab">
-                                <form enctype="multipart/form-data" method="post" asp-controller="Home" asp-action="AddWithMedia">
-                                    <div class="form-group">
-                                        <input class="form-control" name="postTitle" placeholder="Titulo del Post" required />
-                                    </div>
-                                    <div class="form-group">
-                                        <textarea class="form-control" name="postText" rows="3" placeholder="Añade un comentario al archivo"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="custom-file">
-                                            <input type="file" class="custom-file-input" id="postMedia" name="postMedia" required>
-                                            <label class="custom-file-label" for="postMedia">Subir Multimedia</label>
+                            @if (errFormat)
+                            {
+                                <div class="tab-pane fade" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+                                    <form method="post" asp-controller="Home" asp-action="Add">
+                                        <div class="form-group">
+                                            <input class="form-control" name="postTitle" placeholder="Titulo del Post" required />
                                         </div>
-                                    </div>
-                                    <div class="btn-group">
-                                        <button type="submit" class="btn btn-primary">Publicar</button>
-                                    </div>
-                                </form>
-                            </div>
+                                        <div class="form-group">
+                                            <textarea class="form-control" name="postText" rows="3" placeholder="Que quieres postear?" required></textarea>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button type="submit" class="btn btn-primary">Publicar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane fade show active" id="images" role="tabpanel" aria-labelledby="images-tab">
+                                    <form enctype="multipart/form-data" method="post" asp-controller="Home" asp-action="AddWithMedia">
+                                        <div class="form-group">
+                                            <input class="form-control" name="postTitle" placeholder="Titulo del Post" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <textarea class="form-control" name="postText" rows="3" placeholder="Añade un comentario al archivo"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <span class="text-danger">Formato de archivo no soportado. <br>Archivos de imagen soportados: .jpg .jpeg .png .gif. <br>Formatos de video soportados: .mp4 .flv .mkv</span>
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="postMedia" name="postMedia" required>
+                                                <label class="custom-file-label" for="postMedia">Subir Multimedia</label>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button type="submit" class="btn btn-primary">Publicar</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            }
+                            else
+                            {
+                                <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+                                    <form method="post" asp-controller="Home" asp-action="Add">
+                                        <div class="form-group">
+                                            <input class="form-control" name="postTitle" placeholder="Titulo del Post" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <textarea class="form-control" name="postText" rows="3" placeholder="Que quieres postear?" required></textarea>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button type="submit" class="btn btn-primary">Publicar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane fade" id="images" role="tabpanel" aria-labelledby="images-tab">
+                                    <form enctype="multipart/form-data" method="post" asp-controller="Home" asp-action="AddWithMedia">
+                                        <div class="form-group">
+                                            <input class="form-control" name="postTitle" placeholder="Titulo del Post" required />
+                                        </div>
+                                        <div class="form-group">
+                                            <textarea class="form-control" name="postText" rows="3" placeholder="Añade un comentario al archivo"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input" id="postMedia" name="postMedia" required>
+                                                <label class="custom-file-label" for="postMedia">Subir Multimedia</label>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group">
+                                            <button type="submit" class="btn btn-primary">Publicar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -104,7 +159,7 @@
                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="gedf-drop1">
                                             <div class="h6 dropdown-header">Opciones</div>
                                             <a asp-controller="Posts" asp-action="Edit" asp-route-id="@post.Id" class="dropdown-item">Editar</a>
-                                            <a asp-controller="Posts" asp-action="Delete" asp-route-id="@post.Id" class="dropdown-item">Eliminar</a>
+                                            <a asp-controller="Posts" asp-action="Delete" asp-route-id="@post.Id" class="dropdown-item text-danger">Eliminar</a>
                                         </div>
                                     </div>
                                 }

@@ -20,5 +20,6 @@ namespace Jay.Core.Application.Interfaces.Services
         Task<UserViewModel> GetByIdWithIncludesViewModel(int id);
         Task<FriendsViewModel> GetFriendsViewModel();
         Task<List<int>> GetFriendsArray();
+        Task DeleteFriend(int userId, int frId, int frType);
     }
 }

@@ -10,9 +10,8 @@
     Layout = "~/Views/Shared/_JayLayout.cshtml";
     IHttpContextAccessor _httpContext = httpContext;
     UserViewModel _user = _httpContext.HttpContext.Session.Get<UserViewModel>("user");
-    ViewData["Title"] = "Inicio";
+    ViewData["Title"] = "Titulo";
 
-    ViewData["postType"] = "all";
 }
 
 

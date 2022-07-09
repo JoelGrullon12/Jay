@@ -18,6 +18,12 @@ namespace Jay.Infrastructure.Persistence.Repositories
         {
             _dbContext = dbContext;
         }
+
+        public async Task<Friend> GetFriendshipAsync(int userid, int frid)
+        {
+            return await _dbContext.Set<Friend>().FirstOrDefaultAsync(
+                fr => fr.UserId == userid && fr.FriendId == frid);
+        }
     }
 }
 
