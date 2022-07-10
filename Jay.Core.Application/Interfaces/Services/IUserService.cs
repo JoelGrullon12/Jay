@@ -21,5 +21,10 @@ namespace Jay.Core.Application.Interfaces.Services
         Task<FriendsViewModel> GetFriendsViewModel();
         Task<List<int>> GetFriendsArray();
         Task DeleteFriend(int userId, int frId, int frType);
+        Task<UserViewModel> Add(UserViewModel vm);
+        Task<bool> VerifyAccountWithKey(int id, string key);
+        Task<bool> IsUserActive(int id);
+        Task SendVerificationEmail(int id);
+        Task SendResetEmail(string email, string name, string pass);
     }
 }

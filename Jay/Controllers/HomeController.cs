@@ -41,6 +41,9 @@ namespace Jay.Presentation.WebApp.Controllers
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
 
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
+
             ViewBag.ErrFormat = errFileFormat;
 
             return View(await _postService.GetAllViewModel());
@@ -53,6 +56,8 @@ namespace Jay.Presentation.WebApp.Controllers
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
 
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
 
             FileInfo fileInfo = new(postMedia.FileName);
             int mediaType;
@@ -102,6 +107,9 @@ namespace Jay.Presentation.WebApp.Controllers
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
 
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
+
             PostViewModel vm = new()
             {
                 PostTitle = postTitle,
@@ -121,6 +129,9 @@ namespace Jay.Presentation.WebApp.Controllers
         {
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
+
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
 
             CommentViewModel vm = new()
             {

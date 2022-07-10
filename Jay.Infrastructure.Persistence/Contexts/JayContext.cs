@@ -30,12 +30,12 @@ namespace Jay.Infrastructure.Persistence.Contexts
                 {
                     case EntityState.Added:
                         entry.Entity.Created = DateTime.Now;
-                        entry.Entity.CreatedBy = _httpContext.HttpContext.Session.Get<UserViewModel>("user").UserName;
+                        entry.Entity.CreatedBy = _httpContext.HttpContext.Session.Get<UserViewModel>("user") == null ? "DefaultUser" : _httpContext.HttpContext.Session.Get<UserViewModel>("user").UserName;
                         break;
 
                     case EntityState.Modified:
                         entry.Entity.Modified = DateTime.Now;
-                        entry.Entity.ModifiedBy = _httpContext.HttpContext.Session.Get<UserViewModel>("user").UserName;
+                        entry.Entity.ModifiedBy = _httpContext.HttpContext.Session.Get<UserViewModel>("user") == null ? "DefaultUser" : _httpContext.HttpContext.Session.Get<UserViewModel>("user").UserName;
                         break;
                 }
             }

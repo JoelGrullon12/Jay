@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Jay.Core.Application.DTOs.Email;
 using Jay.Core.Application.Enums;
 using Jay.Core.Application.Helpers;
 using Jay.Core.Application.Interfaces.Repositories;
@@ -21,11 +22,13 @@ namespace Jay.Core.Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IFriendRepository _frRepository;
         private readonly IPostRepository _postRepository;
+        private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContext;
         private readonly UserViewModel _user;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, IFriendRepository frRepository, IHttpContextAccessor httpContext, IPostRepository postRepository) : base(userRepository, mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper, IFriendRepository frRepository, 
+            IHttpContextAccessor httpContext, IPostRepository postRepository, IEmailService emailService) : base(userRepository, mapper)
         {
             _userRepository = userRepository;
             _mapper = mapper;
@@ -33,6 +36,7 @@ namespace Jay.Core.Application.Services
             _httpContext = httpContext;
             _user = _httpContext.HttpContext.Session.Get<UserViewModel>("user");
             _postRepository = postRepository;
+            _emailService = emailService;
         }
 
         public async Task<UserViewModel> CheckUser(string userName)
@@ -59,10 +63,41 @@ namespace Jay.Core.Application.Services
             return userVM;
         }
 
-        public override async Task DML(UserViewModel vm, DMLAction action, int id = 0)
+        public override async Task<UserViewModel> Add(UserViewModel vm)
         {
             vm.Password = Stuff.EncryptSHA256(vm.Password);
-            await base.DML(vm, action, id);
+            User user = _mapper.Map<User>(vm);
+
+            user = await _userRepository.AddAsync(user);
+
+            UserViewModel userVM = _mapper.Map<UserViewModel>(user);
+
+            await SendVerificationEmail(userVM.Id);
+
+            return userVM;
+        }
+
+        public async Task SendVerificationEmail(int id)
+        {
+            string key = await _userRepository.GetKeyAsync(id);
+            var user = await _userRepository.GetByIdAsync(id);
+
+            await _emailService.SendAsync(new EmailRequest
+            {
+                To = user.Email,
+                Subject = "Bienvenido/a a Jay",
+                Body = Stuff.SetVerifyEmail("/media/app/secondary-logo.png", $"/Access/VerifyAccount?id={id}&key={key}")
+            });
+        }
+
+        public async Task SendResetEmail(string email, string name, string pass)
+        {
+            await _emailService.SendAsync(new EmailRequest
+            {
+                To = email,
+                Subject = "Contraseña restaurada",
+                Body = Stuff.SetResetEmail(name, pass)
+            });
         }
 
         public async Task<List<UserViewModel>> SearchAllViewModel(string search)
@@ -73,7 +108,10 @@ namespace Jay.Core.Application.Services
 
             foreach (UserViewModel user in users)
             {
-                if (!user.Name.ToLower().Contains(search.ToLower()) && !user.UserName.ToLower().Contains(search.ToLower()))
+                if (user.Id == _user.Id)
+                {
+                    userVM.Remove(user);
+                }else if (!user.Name.ToLower().Contains(search.ToLower()) && !user.UserName.ToLower().Contains(search.ToLower()))
                 {
                     userVM.Remove(user);
                 }
@@ -161,6 +199,16 @@ namespace Jay.Core.Application.Services
                 friend = await _frRepository.GetFriendshipAsync(frId, userId);
 
             await _frRepository.DeleteAsync(friend);
+        }
+
+        public async Task<bool> VerifyAccountWithKey(int id, string key)
+        {
+            return await _userRepository.VerifyAccountAsync(id, key);
+        }
+
+        public async Task<bool> IsUserActive(int id)
+        {
+            return await _userRepository.IsUserActiveAsync(id);
         }
     }
 }

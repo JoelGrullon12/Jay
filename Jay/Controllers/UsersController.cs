@@ -31,13 +31,19 @@ namespace Jay.Presentation.WebApp.Controllers
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
 
-            return View(await _userService.GetByIdViewModel(id));
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
+
+            return RedirectToAction("UserDetails", new { id = id });
         }
 
         public async Task<IActionResult> Search(string search)
         {
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
+
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
 
             if (search != null)
             {
@@ -54,6 +60,9 @@ namespace Jay.Presentation.WebApp.Controllers
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
 
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
+
             return View(await _userService.GetByIdWithIncludesViewModel(id));
         }
 
@@ -61,6 +70,9 @@ namespace Jay.Presentation.WebApp.Controllers
         {
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
+
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
 
             await _userService.AddFriend(frId);
 
@@ -72,6 +84,9 @@ namespace Jay.Presentation.WebApp.Controllers
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
 
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
+
             ViewData["frType"] = frType;
             return View(await _userService.GetByIdWithIncludesViewModel(id));
         }
@@ -81,6 +96,9 @@ namespace Jay.Presentation.WebApp.Controllers
         {
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
+
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
 
             await _userService.DeleteFriend(_user.Id, frid, frType);
             return RedirectToAction("Index", "Home");

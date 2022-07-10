@@ -1,6 +1,8 @@
 ﻿using Jay.Core.Application.Helpers;
+using Jay.Core.Application.Interfaces.Services;
 using Jay.Core.Application.ViewModels.User;
 using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace Jay.Presentation.WebApp.Middleware
 {

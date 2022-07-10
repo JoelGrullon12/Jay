@@ -47,6 +47,34 @@ namespace Jay.Infrastructure.Persistence.Repositories
 
             return query;
         }
+
+        public async Task<string> GetKeyAsync(int id)
+        {
+            var user = await _dbContext.Set<User>().FindAsync(id);
+            return user.Password;
+        }
+
+        public async Task<bool> VerifyAccountAsync(int id, string key)
+        {
+            var user = await _dbContext.Set<User>().FirstOrDefaultAsync(u => u.Id == id && u.Password == key);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            user.Active = true;
+
+            await UpdateAsync(user, id);
+            return true;
+        }
+
+        public async Task<bool> IsUserActiveAsync(int id)
+        {
+            var user = await _dbContext.Set<User>().FindAsync(id);
+
+            return user.Active;
+        }
     }
 }
 

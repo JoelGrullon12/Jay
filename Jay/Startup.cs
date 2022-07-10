@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Jay.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Http;
 using Jay.Presentation.WebApp.Middleware;
+using Jay.Infrastructure.Shared;
 
 namespace Jay.Presentation.WebApp
 {
@@ -31,6 +32,7 @@ namespace Jay.Presentation.WebApp
             services.AddControllersWithViews();
             services.AddApplicationLayer(_config);
             services.AddPersistenceInfrastructure(_config);
+            services.AddSharedInfrastructure(_config);
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<ValidateSession, ValidateSession>();
         }

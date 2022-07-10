@@ -36,6 +36,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Jay.Core.Application\Jay.Core.Application.csproj" />
     <ProjectReference Include="..\Jay.Infrastructure.Persistence\Jay.Infrastructure.Persistence.csproj" />
+    <ProjectReference Include="..\Jay.Infrastructure.Shared\Jay.Infrastructure.Shared.csproj" />
   </ItemGroup>
 
 </Project>

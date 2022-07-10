@@ -1,4 +1,5 @@
-﻿using Jay.Core.Application.Enums;
+﻿using Jay.Core.Application.DTOs.Email;
+using Jay.Core.Application.Enums;
 using Jay.Core.Application.Helpers;
 using Jay.Core.Application.Interfaces.Services;
 using Jay.Core.Application.ViewModels.User;
@@ -14,18 +15,24 @@ namespace Jay.Presentation.WebApp.Controllers
     public class AccessController : Controller
     {
         private readonly IUserService _userService;
+        private readonly IEmailService _emailService;
         private readonly ValidateSession _session;
+        private readonly IHttpContextAccessor _httpContext;
 
-        public AccessController(IUserService userService, ValidateSession session)
+        public AccessController(IUserService userService, ValidateSession session, IEmailService emailService, IHttpContextAccessor httpContext)
         {
             _userService = userService;
             _session = session;
+            _emailService = emailService;
+            _httpContext = httpContext;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(bool userNameErr = false)
         {
             if (_session.HasUser())
                 return RedirectToRoute(new { controller = "Home", action = "Index" });
+
+            ViewData["userNameErr"] = userNameErr;
 
             return View();
         }
@@ -95,8 +102,8 @@ namespace Jay.Presentation.WebApp.Controllers
                 userVM.ProfilePicture = UploadImg(img, userVM.Id);
                 await _userService.DML(userVM, DMLAction.Update, userVM.Id);
             }
-
-            return RedirectToRoute(new { controller = "Access", action = "LogOut" });
+            HttpContext.Session.Remove("user");
+            return RedirectToAction("Index");
         }
 
         public IActionResult LogOut()
@@ -105,20 +112,79 @@ namespace Jay.Presentation.WebApp.Controllers
             return RedirectToRoute(new { controller = "Access", action = "Index" });
         }
 
-        public IActionResult ResetPassword()
+        public async Task<IActionResult> VerifyAccount(int id, string key)
         {
-            if (_session.HasUser())
-                return RedirectToRoute(new { controller = "Home", action = "Index" });
+            bool verified = await _userService.VerifyAccountWithKey(id, key);
+            ViewData["verified"] = verified;
+            return View();
+        }
+
+        public async Task<IActionResult> VerifyEmail(bool send=false)
+        {
+            if (!_session.HasUser())
+                return RedirectToRoute(new { controller = "Access", action = "Index" });
+            
+            if(send)
+                await _userService.SendVerificationEmail(_httpContext.HttpContext.Session.Get<UserViewModel>("user").Id);
 
             return View();
         }
 
-        [HttpPost]
-        public IActionResult ResetPassword(string UserName)
+
+        public async Task<IActionResult> ResetPasswordGet(string UserName)
         {
             if (_session.HasUser())
                 return RedirectToRoute(new { controller = "Home", action = "Index" });
 
+            UserViewModel user = await _userService.CheckUser(UserName);
+
+            if (user == null)
+            {
+                return RedirectToAction("Index", new { userNameErr = true });
+            }
+
+            Guid guid = Guid.NewGuid();
+            string[] guids = guid.ToString().Split("-");
+            string pass = "";
+            for (int i = 0; i < guids.Length; i++)
+            {
+                pass += guids[i];
+            }
+            user.Password = Stuff.EncryptSHA256(pass);
+            await _userService.DML(user, DMLAction.Update, user.Id);
+
+            await _userService.SendResetEmail(user.Email, user.Name, pass);
+
+            ViewData["userName"] = UserName;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(string UserName)
+        {
+            if (_session.HasUser())
+                return RedirectToRoute(new { controller = "Home", action = "Index" });
+
+            UserViewModel user = await _userService.CheckUser(UserName);
+
+            if (user == null)
+            {
+                return RedirectToAction("Index", new { userNameErr = true });
+            }
+
+            Guid guid = Guid.NewGuid();
+            string[] guids = guid.ToString().Split("-");
+            string pass = "";
+            for (int i = 0; i < guids.Length; i++)
+            {
+                pass += guids[i];
+            }
+            user.Password = Stuff.EncryptSHA256(pass);
+            await _userService.DML(user, DMLAction.Update, user.Id);
+
+            await _userService.SendResetEmail(user.Email, user.Name, pass);
+
+            ViewData["userName"] = UserName;
             return View();
         }
 

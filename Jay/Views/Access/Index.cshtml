@@ -1,8 +1,9 @@
 ﻿@using Jay.Core.Application.ViewModels.User
 @model LoginViewModel
 @{
-    
     ViewData["Title"] = "Iniciar Sesion";
+
+    bool userNameErr = Convert.ToBoolean(ViewData["userNameErr"]);
 }
 
 <div class="row">
@@ -11,6 +12,10 @@
   <h5 class="card-header">Iniciar Sesion</h5>
   <div class="card-body">
         @Html.ValidationSummary(false, "", new {@class="text-danger"})
+        @if (userNameErr)
+        {
+            <span class="text-danger">El usuario no existe</span>
+        }
         <form method="post" asp-action="Index" asp-controller="Access">
           <div class="mb-3">
             <label asp-for="UserName" class="form-label">Usuario</label>
@@ -43,7 +48,7 @@
       <div class="modal-body">
           <div class="mb-3">
             <label for="UserName" class="form-label">Nombre de Usuario</label>
-            <input type="text" class="form-control" id="UserName" name="UserName">
+            <input type="text" class="form-control" id="UserName" name="UserName" required>
           </div>
 
           <p>

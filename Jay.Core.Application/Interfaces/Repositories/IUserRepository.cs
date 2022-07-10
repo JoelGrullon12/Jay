@@ -13,5 +13,8 @@ namespace Jay.Core.Application.Interfaces.Repositories
         Task<User> CheckUserAsync(string userName);
         Task<User> LoginAsync(LoginViewModel vm);
         Task<User> GetByIdWithIncludeAsync(int id, List<string> props);
+        Task<string> GetKeyAsync(int id);
+        Task<bool> VerifyAccountAsync(int id, string key);
+        Task<bool> IsUserActiveAsync(int id);
     }
 }

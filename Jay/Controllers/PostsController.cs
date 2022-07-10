@@ -16,29 +16,41 @@ namespace Jay.Presentation.WebApp.Controllers
     {
         private readonly IPostService _postService;
         private readonly ICommentService _comService;
+        private readonly IUserService _userService;
         private readonly ValidateSession _session;
         private readonly IHttpContextAccessor _httpContext;
         private readonly UserViewModel _user;
 
-        public PostsController(IPostService postService, ValidateSession session, IHttpContextAccessor httpContext, ICommentService comService)
+        public PostsController(IPostService postService, ValidateSession session, IHttpContextAccessor httpContext, 
+            ICommentService comService, IUserService userService)
         {
             _postService = postService;
             _session = session;
             _httpContext = httpContext;
             _comService = comService;
             _user = _httpContext.HttpContext.Session.Get<UserViewModel>("user");
+            _userService = userService;
         }
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            if (!_session.HasUser())
+                return RedirectToRoute(new { controller = "Access", action = "Index" });
+
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
+
+            return RedirectToAction("Index", "Home");
         }
 
         public async Task<IActionResult> MyPosts()
         {
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
+
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
 
             return View(await _postService.GetSpecificViewModel(true));
         }
@@ -48,6 +60,9 @@ namespace Jay.Presentation.WebApp.Controllers
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
 
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
+
             return View(await _postService.GetSpecificViewModel(false));
         }
 
@@ -56,6 +71,9 @@ namespace Jay.Presentation.WebApp.Controllers
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
 
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
+
             return View(await _postService.GetByIdWithIncludesViewModel(id));
         }
 
@@ -63,6 +81,9 @@ namespace Jay.Presentation.WebApp.Controllers
         {
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
+
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
 
             ViewBag.ErrFormat = errFileFormat;
 
@@ -74,6 +95,9 @@ namespace Jay.Presentation.WebApp.Controllers
         {
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
+
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
 
             PostViewModel oldpost = await _postService.GetByIdViewModel(vm.Id);
 
@@ -119,6 +143,9 @@ namespace Jay.Presentation.WebApp.Controllers
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
 
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
+
             PostViewModel vm = await _postService.GetByIdWithIncludesViewModel(id);
             return View(vm);
         }
@@ -129,6 +156,8 @@ namespace Jay.Presentation.WebApp.Controllers
             if (!_session.HasUser())
                 return RedirectToRoute(new { controller = "Access", action = "Index" });
 
+            if (!await _userService.IsUserActive(_user.Id))
+                return RedirectToRoute(new { controller = "Access", action = "VerifyEmail" });
 
             await _postService.DML(vm, DMLAction.Delete);
 
